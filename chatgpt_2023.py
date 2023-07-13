@@ -37,8 +37,8 @@ def show_dialog():
 
     # ウィンドウのレイアウト
     layout = [
-            [sg.Button('SEND', size=(10, 1), key='SEND'),sg.Button('CLOSE', size=(10, 1), key='CLOSE') ],
-            [sg.Multiline(default_text="", size=(width,5)) ],
+            [sg.Button('SEND', size=(10, 1), key='SEND'),sg.Button('CLEAR', size=(10, 1), key='CLEAR'),sg.Button('CLOSE', size=(10, 1), key='CLOSE') ],
+            [sg.Multiline(default_text="", size=(width,5),  key='Multiline1') ],
             [sg.Multiline(default_text="", size=(width,10), key='Multiline2') ],
         ]
 
@@ -60,12 +60,15 @@ def show_dialog():
         if event == 'CLOSE':
             break
 
+        if event == 'CLEAR':
+            window['Multiline1'].update("")
+
         # ウィンドウの×ボタンクリックで終了
         if event == sg.WIN_CLOSED:
             break
         
-        if len(values) > 0 :
-            input_prompt = values[0]
+        if( event == 'SEND' and len(values) > 0 ):
+            input_prompt = values['Multiline1']
             generated_text = generate_text(input_prompt, conversation_history)
             window['Multiline2'].update(generated_text)
             print("応答:", generated_text)
@@ -75,5 +78,3 @@ def show_dialog():
 
 if __name__ == "__main__":
     show_dialog()
-
-        
