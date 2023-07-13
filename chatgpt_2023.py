@@ -14,7 +14,7 @@ def generate_text(prompt, conversation_history):
     # GPT-4モデルを使用する場合
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        # model="gpt-4-model",
+        # model="gpt-4",
         # model="gpt-3.5-turbo",
         messages=conversation_history
     )
