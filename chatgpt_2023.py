@@ -1,5 +1,4 @@
-# PythonからGPT-4を使用するためにはOpenAIのパッケージを最新版にしておく必要があります。
-# 以下のコマンドで、現時点で最新版のパッケージに更新します。
+# PythonからGPT-4を使用するためにはOpenAIのパッケージを最新版にしておく必要があるみたいです。。
 
 import openai
 from tkinter import messagebox, simpledialog, Tk
