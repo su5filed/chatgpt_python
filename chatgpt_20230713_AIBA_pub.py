@@ -124,7 +124,6 @@ def loop_chat(input_prompt,window):
     template = "ルール：回答には文章の冒頭にA)を添えて答えて下さい。その後、Q)を添えて相手に質問して下さい。\n"
     # template = ""
     count=1
-    conversation_history = []
 
     # true:ChatGPT自身に問い合わせ、false ChatGptとBardの会話
     chatgpt_to_chatgpt=False
@@ -139,6 +138,7 @@ def loop_chat(input_prompt,window):
             logo("応答 bard:"+ input_prompt)
 
         # ChatGPT に問い合わせ
+        conversation_history = []
         input_prompt = generate_text_chatgpt(count, template+input_prompt, conversation_history)
         window['Multiline2'].update(input_prompt)
         print("count:",count)
