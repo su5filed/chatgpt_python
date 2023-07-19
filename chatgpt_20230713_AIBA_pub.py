@@ -133,7 +133,7 @@ def loop_chat(input_prompt,window):
         logw("NONE", "--- "+str(count)+" ---")
         # Bard に問い合わせ
         if(chatgpt_to_chatgpt == False):
-            input_prompt = generate_text_bard(count, input_prompt)
+            input_prompt = generate_text_bard(count, template+input_prompt)
             window['Multiline3'].update(input_prompt)
             print("応答 bard:", input_prompt)
             logo("応答 bard:"+ input_prompt)
