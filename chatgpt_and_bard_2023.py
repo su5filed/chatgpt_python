@@ -18,6 +18,7 @@ folder = 'log'
 
 logfilename_html = ""
 logfilename_txt = ""
+threading_pub = None
 
 #chat GPTの応答
 def generate_text_chatgpt(prompt, conversation_history):
@@ -54,7 +55,7 @@ def generate_text_bard(prompt, conversation_history_bard):
 
 def show_dialog():
     # ウィンドウのテーマ
-    sg.theme('BlueMono')
+    sg.theme('LightGreen')
 
 
     # ウィンドウの初期サイズ
@@ -65,7 +66,8 @@ def show_dialog():
 
     # ウィンドウのレイアウト
     layout = [
-            [sg.Button('SEND', size=(10, 1), key='SEND'),sg.Button('CLEAR', size=(10, 1), key='CLEAR'),sg.Button('CLOSE', size=(10, 1), key='CLOSE') ],
+            [sg.Button('SEND', size=(10, 1), key='SEND'),sg.Button('STOP', size=(10, 1), key='STOP'),sg.Button('CLEAR', size=(10, 1), key='CLEAR'),sg.Button('CLOSE', size=(10, 1), key='CLOSE'),
+             sg.Checkbox('ChatGptに質問', key='Checkbox_chatgpt', default=True), sg.Checkbox('Bardに質問', key='Checkbox_bard', default=True) ],
             [sg.Multiline(default_text="", size=(initial_width,5),  key='Multiline1') ],
             [sg.Multiline(default_text="", size=(initial_width,10), key='Multiline2') ],
             [sg.Multiline(default_text="", size=(initial_width,10), key='Multiline3') ],
@@ -92,6 +94,14 @@ def show_dialog():
         if event == 'CLEAR':
             window['Multiline1'].update("")
 
+        # SENDボタンがdisableで、STOPボタン押下時
+        if event == 'STOP' and window['SEND'].Disabled == True: 
+            # 一定の時間後にスレッドを中断する
+            if threading_pub != None:
+                threading_pub.interrupted = True
+            # 押せるようにする
+            window['SEND'].update(disabled=False)
+
         # ウィンドウの×ボタンクリックで終了
         if event == sg.WIN_CLOSED:
             break
@@ -101,13 +111,10 @@ def show_dialog():
             input_prompt = values['Multiline1']
 
             # 新しいスレッドを作成し、wait()関数を実行する
-            t = threading.Thread(target=sleep_thread, args=[30,input_prompt,window])
-            t.start()
-            # スレッドがsleepしている間、他の処理を実行する
-            print("スレッドがsleepしています")
-            # スレッドがsleep状態から解除されるまで待つ
-            # t.join()
-            print("スレッドがsleep状態から解除されました")
+            threading_pub = threading.Thread(target=sleep_thread, args=[30,input_prompt,window,values])
+            threading_pub.interrupted = False
+            threading_pub.start()
+
 
         
     # ウィンドウ終了処理
@@ -115,22 +122,33 @@ def show_dialog():
 
 
 # 新しいスレッドで実行する関数
-def sleep_thread(seconds,input_prompt,window):
+def sleep_thread(seconds,input_prompt,window,values):
     # 会話履歴を格納するためのリストを初期化
     # time.sleep(seconds)
     conversation_history = []
     conversation_history_bard = []
+    # ChatGpt に質問
+    Checkbox_chatgpt = values['Checkbox_chatgpt']
+    # Bard に質問
+    Checkbox_bard = values['Checkbox_bard']
     # 押せないようにする
     window['SEND'].update(disabled=True)
     logw("HUMAN", input_prompt)
-    generated_text = generate_text_chatgpt(input_prompt, conversation_history)
-    window['Multiline2'].update(generated_text)
-    print("応答 chatgpt:", generated_text)
-    logw("CHATGPT", generated_text)
-    generated_text = generate_text_bard(input_prompt, conversation_history_bard)
-    window['Multiline3'].update(generated_text)
-    print("応答 bard:", generated_text)
-    logw("BARD", generated_text)
+
+    # ChatGpt に質問 かつ、スレッドが中断されていない
+    if Checkbox_chatgpt and threading.current_thread().interrupted == False:
+        generated_text = generate_text_chatgpt(input_prompt, conversation_history)
+        window['Multiline2'].update(generated_text)
+        print("応答 chatgpt:", generated_text)
+        logw("CHATGPT", generated_text)
+    
+    # Bard に質問　かつ、スレッドが中断されていない
+    if Checkbox_bard and threading.current_thread().interrupted == False:
+        generated_text = generate_text_bard(input_prompt, conversation_history_bard)
+        window['Multiline3'].update(generated_text)
+        print("応答 bard:", generated_text)
+        logw("BARD", generated_text)
+
     # 押せるようにする
     window['SEND'].update(disabled=False)
 
