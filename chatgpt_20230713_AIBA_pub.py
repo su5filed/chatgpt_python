@@ -139,12 +139,13 @@ def show_dialog():
 
 # Q)以降を切り出して、相手に質問する。
 def cut_question(input_prompt):
-    search_keyword="Q)"
-    if search_keyword in input_prompt:
-        # print("before:",input_prompt)
-        index = input_prompt.index(search_keyword) #+ len(search_keyword)
-        input_prompt = input_prompt[index:]
-        # print(" after:",input_prompt)
+    # search_keyword="Q)"
+    # if search_keyword in input_prompt:
+    #     # print("before:",input_prompt)
+    #     index = input_prompt.index(search_keyword) #+ len(search_keyword)
+    #     input_prompt = input_prompt[index:]
+    #     # print(" after:",input_prompt)
+    
     return input_prompt
 
 def loop_chat(input_prompt,window, checkbox1_value, loop_count, InputText_template):
