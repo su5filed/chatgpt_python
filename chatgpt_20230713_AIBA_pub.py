@@ -225,7 +225,7 @@ def logw(TAG, line):
         color="blue"
     elif TAG=="CHATGPT":
         color="red"
-    logh("<tr><td bgcolor="+color+">"+TAG+"</td><td><font color="+color+">"+line+"</font></td>", logfilename_html)        
+    logh("<tr><td bgcolor="+color+">"+TAG+"</td><td><font color="+color+"><pre>"+line+"</pre></font></td></tr>", logfilename_html)        
     
 if __name__ == "__main__":
     
