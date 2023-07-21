@@ -137,7 +137,15 @@ def show_dialog():
     # ウィンドウ終了処理
     window.close()
 
-
+# Q)以降を切り出して、相手に質問する。
+def cut_question(input_prompt):
+    search_keyword="Q)"
+    if search_keyword in input_prompt:
+        # print("before:",input_prompt)
+        index = input_prompt.index(search_keyword) #+ len(search_keyword)
+        input_prompt = input_prompt[index:]
+        # print(" after:",input_prompt)
+    return input_prompt
 
 def loop_chat(input_prompt,window, checkbox1_value, loop_count, InputText_template):
     
@@ -163,7 +171,7 @@ def loop_chat(input_prompt,window, checkbox1_value, loop_count, InputText_templa
 
         # ChatGPT に問い合わせ
         conversation_history = []
-        input_prompt = generate_text_chatgpt(count, template+input_prompt, conversation_history)
+        input_prompt = generate_text_chatgpt(count, template+cut_question(input_prompt), conversation_history)
         window['Multiline2'].update(input_prompt)
         print("count:",count)
         logo("count:"+ str(count))
@@ -179,7 +187,7 @@ def loop_chat(input_prompt,window, checkbox1_value, loop_count, InputText_templa
         # Bard に問い合わせ
         conversation_history = []
         if(chatgpt_to_chatgpt == False):
-            input_prompt = generate_text_bard(count, template+input_prompt)
+            input_prompt = generate_text_bard(count, template+cut_question(input_prompt))
             window['Multiline3'].update(input_prompt)
             print("応答 bard:", input_prompt)
             logo("応答 bard:"+ input_prompt)
